@@ -74,18 +74,28 @@ class Backpack:
         return self.brand_name[1]
 
     @property
-    def filepath(self) -> str:
-        """
-        Filename of the markdown photo file.
-        """
-
+    def file_stem(self) -> str:
         def sanitize(x):
             x = x.lower().encode("ascii", errors="ignore").decode()
             return x.replace(" ", "").replace(".", "-")
 
         stem = sanitize(self.name)
         brand = sanitize(self.brand)
-        return path.join("bp", brand + "--" + stem + ".md")
+        return brand + "--" + stem
+
+    @property
+    def asset_dir(self) -> str:
+        """
+        Filename of the markdown file.
+        """
+        return path.join("assets", self.file_stem)
+
+    @property
+    def filepath(self) -> str:
+        """
+        Filename of the markdown file.
+        """
+        return path.join("bp", self.file_stem + ".md")
 
     def markdown_row(self) -> list[str]:
         def link(url, display):

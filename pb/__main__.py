@@ -1,5 +1,5 @@
 from pb.types import *
-from os import path
+from os import path, makedirs, listdir
 
 __backpacks__ = [
     Backpack(
@@ -110,9 +110,12 @@ def main():
     lines = [markdown_row(Backpack.markdown_header()), "|---|"]
     for b in backpacks():
         lines.append(markdown_row(b.markdown_row()))
-        if not path.exists(b.filepath):
-            with open(b.filepath, "w") as f:
-                f.write("")
+        makedirs(b.asset_dir, exist_ok=True)
+        makedirs(path.dirname(b.filepath), exist_ok=True)
+        with open(b.filepath, "w") as f:
+            for pic in sorted(listdir(b.asset_dir)):
+                pic_path = path.join("..", b.asset_dir, pic)
+                print(f"![]({pic_path})", file=f)
 
     with open("README.md", "r") as f:
         readme = f.read()
